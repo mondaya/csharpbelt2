@@ -38,7 +38,7 @@ namespace belt2
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IHostingEnvironment env)
         {
 
-            if( true )
+            if(env.IsDevelopment())
             {
                 loggerFactory.AddConsole();
                 app.UseDeveloperExceptionPage();
