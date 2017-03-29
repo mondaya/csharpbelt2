@@ -28,7 +28,16 @@
   },
    "runtimes": {
     "osx.10.11-x64": {}
-  }
+  },
+
+  "publishOptions": {
+    "include": [
+        "Content",
+        "Views",
+        "web.config",
+        "appsettings.json"
+    ]
+}
   
 
 
