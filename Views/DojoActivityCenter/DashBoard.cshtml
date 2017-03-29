@@ -67,8 +67,16 @@
 <form  action="new" method ="get" >
     <button class="joinEvent  btn btn-primary btn-lg">Add New Activity!</button>
 </form>
+<br>
 @if(ViewBag.JoinError != null){
     
-    <p ><b>@ViewBag.JoinError</b></p>
+    <p ><b>Conflict with the following events</b></p>
+    
+            @foreach(var error in ViewBag.JoinError)
+                {
+                    <p ><b>@error</b></p>
+                }
+    
+   
    
 }

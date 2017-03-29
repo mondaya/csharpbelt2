@@ -30,10 +30,30 @@ namespace belt2.Controllers
         private int getDurationNormalized(int type, int duration)
         {
             if (type == 1)
-                return duration *60;
+                return duration * 60;
             if (type == 2)
                 return duration;
             return 24 * 60 * duration;
+        }
+
+        bool isConflict(DateTime requestedDateTime, int requestedDuration, DateTime possibleConfilctDateTime, int possibleDuration)
+        {
+
+            DateTime endX = requestedDateTime.AddMinutes(requestedDuration);
+            DateTime endY = possibleConfilctDateTime.AddMinutes(possibleDuration);
+
+            DateTime startX = requestedDateTime;
+            DateTime startY = possibleConfilctDateTime;
+
+            if (startX <= startY && endX <= endY)
+                return true;
+            if (startX <= startY && endX >= endY)
+                return true;
+
+            if (startX >= startY && endX <= endY)
+                return true;
+
+            return false;
         }
 
         // GET: /Home/       
@@ -42,10 +62,11 @@ namespace belt2.Controllers
         public IActionResult DashBoard()
         {
 
-            if( HttpContext.Session.GetString("JoinError")  != null ){
-               
-               ViewBag.JoinError = "Conflicitinfg Schedule";
-               HttpContext.Session.Remove("JoinError");
+            if (HttpContext.Session.GetObjectFromJson<List<string>>("JoinError") != null)
+            {
+
+                ViewBag.JoinError = HttpContext.Session.GetObjectFromJson<List<string>>("JoinError");
+                HttpContext.Session.Remove("JoinError");
 
             }
 
@@ -56,7 +77,7 @@ namespace belt2.Controllers
                 List<EventDetails> AllEvents = _context.Events
                 .Include(e => e.User)
                 .Include(e => e.Participants)
-                .Where(e=>e.EventDateTime.AddMinutes(this.getDurationNormalized(e.DurationType, e.Duration)) >= DateTime.Now)
+                .Where(e => e.EventDateTime.AddMinutes(this.getDurationNormalized(e.DurationType, e.Duration)) >= DateTime.Now)
                 .Select(e => new EventDetails
                 {
                     id = e.id,
@@ -94,7 +115,7 @@ namespace belt2.Controllers
                 ViewBag.Errors = HttpContext.Session.GetObjectFromJson<object>("ModelState");
                 HttpContext.Session.Remove("ModelState");
             }
-            
+
             int? userId = HttpContext.Session.GetInt32("userId");
             if (userId != null)
             {
@@ -149,36 +170,44 @@ namespace belt2.Controllers
             int? userId = HttpContext.Session.GetInt32("userId");
             if (userId != null)
             {
-                Event EventToJoin = _context.Events               
+                Event EventToJoin = _context.Events
                         .Single(e => e.id == EventId);
 
-                 List<Event> currEvents = _context.Events
-                       
-                    .Join(_context.Participants.Where(p => p.UserId == (int)userId),
-                        e=>e.id,
-                        p=>p.EventId,
-                        (e,p)=> e)               
-                    .Where(e=> e.EventDateTime == EventToJoin.EventDateTime &&
-                            this.getDurationNormalized(e.DurationType, e.Duration)  == this.getDurationNormalized(EventToJoin.DurationType, EventToJoin.Duration)
-                    ).ToList();
+                List<Event> currEvents = _context.Events
 
-                    if(currEvents.Count > 0){
-                       
-                        HttpContext.Session.SetString("JoinError", "Co");
-                    }
-                    else{
-                         Participant newParticipant = new Participant();
+                   .Join(_context.Participants.Where(p => p.UserId == (int)userId),
+                       e => e.id,
+                       p => p.EventId,
+                       (e, p) => e)
+                   .Where(e => this.isConflict(EventToJoin.EventDateTime, 
+                                            this.getDurationNormalized(EventToJoin.DurationType, EventToJoin.Duration),
+                                            e.EventDateTime,
+                                            this.getDurationNormalized(e.DurationType, e.Duration)
+                         )
+                           
+                   ).ToList();
 
-                        newParticipant.UserId = (int)userId;
-                        newParticipant.EventId = EventId;
-                        _context.Participants.Add(newParticipant);
-                        _context.SaveChanges();
+                if (currEvents.Count > 0)
+                {
+                    List<string> eventInConflicts = new List<string>();
+                    foreach (Event entity in currEvents)
+                        eventInConflicts.Add(entity.Name);
+                    HttpContext.Session.SetObjectAsJson("JoinError", eventInConflicts);
+                }
+                else
+                {
+                    Participant newParticipant = new Participant();
 
-                    }
+                    newParticipant.UserId = (int)userId;
+                    newParticipant.EventId = EventId;
+                    _context.Participants.Add(newParticipant);
+                    _context.SaveChanges();
 
-                 
+                }
 
-               
+
+
+
                 return RedirectToAction("DashBoard");
 
             }
@@ -221,8 +250,8 @@ namespace belt2.Controllers
             {
 
                 _context.Participants.RemoveRange(_context.Participants
-                .Where(p => p.EventId == EventId && p.UserId == (int)userId)); 
-                _context.SaveChanges();            
+                .Where(p => p.EventId == EventId && p.UserId == (int)userId));
+                _context.SaveChanges();
 
                 return RedirectToAction("DashBoard");
 
@@ -242,9 +271,16 @@ namespace belt2.Controllers
             if (userId != null)
             {
                 ViewBag.UserName = HttpContext.Session.GetString("userName");
-                EventDetails Event = _context.Events
+
+                List<Event> EventWithIncludes
+                 = _context.Events
                 .Include(e => e.User)
                 .Include(e => e.Participants)
+                    .ThenInclude(p => p.User)
+                .ToList();
+
+
+                EventDetails Event = EventWithIncludes
                 .Select(e => new EventDetails
                 {
                     id = e.id,

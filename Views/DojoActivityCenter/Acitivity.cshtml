@@ -44,7 +44,7 @@ else
 
 <div class="form-inline" >
     <label for="cor">Event Coordinator</label>
-    <input type="text" class="form-control" id="cor" readonly value="@ViewBag.Event.userLoginId">    
+    <input type="text" class="form-control" id="cor" readonly value="@ViewBag.Event.Creator.FirstName">    
 </div> 
   
 
@@ -52,7 +52,7 @@ else
     <label for="Description">Description</label>
     <textArea type="text" class="form-control" id="Description" name="Description" readonly>@ViewBag.Event.Description</textArea>  
       
-</div>
+</div><br>
 
 <div class="row">
             <p ><b>Participants<b></p>
@@ -62,5 +62,19 @@ else
                   <li>@Participant.User.FirstName</li>
               }
             </ul>
-</div>    
+</div><br> 
+
+@if(ViewBag.JoinError != null){
+    
+    <p ><b>Conflict with the following events</b></p>
+     
+            @foreach(var error in ViewBag.JoinError)
+                {
+                    <p ><b>@error</b></p>
+                }
+    
+   
+   
+}
+
 
