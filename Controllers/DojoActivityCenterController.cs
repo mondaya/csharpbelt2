@@ -45,6 +45,12 @@ namespace belt2.Controllers
             DateTime startX = requestedDateTime;
             DateTime startY = possibleConfilctDateTime;
 
+            if (startX < startY && endX < startY)
+                return false;
+                
+            if (startX > endY )
+                return false;
+
             if (startX <= startY && endX <= endY)
                 return true;
             if (startX <= startY && endX >= endY)
