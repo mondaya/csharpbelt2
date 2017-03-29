@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+@using belt2.Models
+@model belt2.Models.RegisterViewModel
+<form asp-controller="Home" asp-action="Register" method="post">
+    <div class=row>
+            <h2 class="col-xs-12 col-md-12  col-md-offset-2 ">Register</h2>
+    </div>
+    <label asp-for="FirstName" class="col-xs-12 col-md-2"></label>
+    <input asp-for="FirstName" class="col-xs-12 col-md-2 register_field"/><br><br>
+
+
+    <label asp-for="LastName" class="col-xs-12 col-md-2"></label>
+    <input asp-for="LastName" class="col-xs-12 col-md-3 register_field"/><br><br>
+
+
+    <label asp-for="Email" class="col-xs-12 col-md-2"></label>
+    <input asp-for="Email" class="col-xs-12 col-md-3 register_field"/><br><br>
+
+    <label asp-for="Password" class="col-xs-12 col-md-2"></label>
+    <input asp-for="Password" class="col-xs-12 col-md-2 register_field"/><br><br>
+    <label asp-for="ConfirmPassword" class="col-xs-12 col-md-2"></label>
+    <input asp-for="ConfirmPassword"class="col-xs-12 col-md-2 register_field"/><br><br>
+    <button type="submit">Register</button> 
+    @if(ViewBag.Login == null){
+       <div asp-validation-summary="All"></div> 
+    }
+    @if(ViewBag.UserExistsMsg != null){
+        <p>@ViewBag.UserExistsMsg</p>
+   }
+
+      
+</form>
+@Html.Partial("LoginPartial", (LoginViewModel)@ViewBag.LoginView)
+
+
+
+
+<!--namespace YourNamespace.Controllers
+{
+    [HttpGet]
+    [Route("RouteName/{example}")]
+    public IActionResult Method(string example)
+    {
+        //Code body
+    }
+}
+Copy
+And we can link to such a route with an anchor tag like so:
+
+SomeView.cshtml
+<a asp-controller="Your" asp-action="Method" asp-route-example="PassMeThroughUrl">link with parameter</a>-->

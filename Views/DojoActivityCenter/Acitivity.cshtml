@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div>
+        <a href="/logout">Logout</a>
+</div>
+<div>
+        <a href="/Home">Home</a>
+</div>
+<div class="row">
+        <div class="col-xs-12 col-lg-6">
+                <h3 >Dojo Activity Center</h3>
+        </div>
+        <div class="col-xs-12 col-lg-2">
+            <p ><b>Welcome,  @ViewBag.UserName<b></p>
+        </div>        
+</div><br>
+
+
+
+<div class="row">
+ <h3>@ViewBag.Event.Name</h3> 
+ @if(@ViewBag.Event.CreatorId == @ViewBag.Event.userLoginId)
+ {
+        <form  action="delete/@ViewBag.Event.id" method ="post" class="eventAction">
+                <button class="deleteEvent  btn btn-danger btn-lg">Delete</button>
+        </form>
+}
+else 
+{
+    @if(@ViewBag.Event.isUserIdParticipating(@ViewBag.Event.userLoginId)){                        
+        <form  action="leave/@ViewBag.Event.id" method ="post" class="eventAction">
+                <button class="leaveEvent  btn btn-info btn-lg">Leave</button>
+        </form>
+    }
+    else{
+
+        <form  action="join/@ViewBag.Event.id" method ="post" class="eventAction">
+            <button class="joinEvent  btn btn-info btn-lg">Join</button>
+        </form>
+    }
+} 
+</div><br>    
+
+<div class="form-inline" >
+    <label for="cor">Event Coordinator</label>
+    <input type="text" class="form-control" id="cor" readonly value="@ViewBag.Event.userLoginId">    
+</div> 
+  
+
+<div class="row">
+    <label for="Description">Description</label>
+    <textArea type="text" class="form-control" id="Description" name="Description" readonly>@ViewBag.Event.Description</textArea>  
+      
+</div>
+
+<div class="row">
+            <p ><b>Participants<b></p>
+            <ul>
+              @foreach(var Participant in @ViewBag.Event.Participants )
+              {
+                  <li>@Participant.User.FirstName</li>
+              }
+            </ul>
+</div>    
+

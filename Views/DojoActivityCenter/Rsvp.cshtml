@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div>
+        <a href="/logout">Logout</a>
+</div>
+<div class="row">
+        <div class="col-xs-12 col-lg-2">
+            <p ><b>Welcome,  @ViewBag.UserName<b></p>
+        </div>        
+</div><br>
+<div><h2>RSVP </h2></div>
+<form action="@ViewBag.EventId" method="post">
+  <div class="form-group" >
+    <label for="RsvpName">Your Name</label>
+    <input type="text" class="form-control" id="RsvpName" placeholder="Your Name"  name="RsvpName" value="@ViewBag.UserName">       
+  </div>
+  <div class="form-group">
+    <label for="RsvpSide">Which side of the wedding are you a guest of?</label>    
+     <select class="form-control" id="RsvpSide" name="RsvpSide">
+        <option value=1>Bride</option>
+        <option value=2>Groom</option>       
+    </select>
+  </div>
+  <div class="form-group">
+   <button type="submit" class="btn btn-success">Attend</button>
+</form>

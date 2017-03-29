@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+<div>
+        <a href="/logout">Logout</a>
+</div>
+<div class="row">
+        <div class="col-xs-12 col-lg-2">
+            <p ><b>Welcome,  @ViewBag.UserName<b></p>
+        </div>        
+</div><br>
+<div><h2>RSVP </h2></div>
+<div>
+  @{ var EventDetails = @ViewBag.EventDetails; }
+  <h2>@EventDetails.Title</h2>
+  <p>@EventDetails.CreatedAt</p>
+
+  <div class="row" >
+    <div class="col-xs-12 col-lg-6">
+            <p ><b>@EventDetails.GroomName (groom) Guests<b></p>
+            <ul>
+              @foreach(var UserName in @EventDetails.GrooomList )
+              {
+                  <li >@UserName</li>
+              }
+            </ul>
+    </div>  
+    <div class="col-xs-12 col-lg-6">
+            <p ><b>@EventDetails.BrideName (bride) Guests<b></p>
+            <ul>
+              @foreach(var UserName in @EventDetails.BrideList )
+              {
+                  <li>@UserName</li>
+              }
+            </ul>
+    </div>    
+  </div>
+</div>

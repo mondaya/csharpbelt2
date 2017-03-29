@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if(ViewBag.UserName != null){
+    <div>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="row">
+         <div class="col-xs-12 col-lg-6">
+                <h3 >Dojo Activity Center</h3>
+        </div>
+            <div class="col-xs-12 col-lg-2">
+                <p ><b>Welcome,  @ViewBag.UserName</b></p>
+            </div>        
+    </div><br>
+}
+
+<table class="table table-condensed" id="user_transaction">
+    <tr>
+        <th>Activity</th>
+        <th>Date and Time</th>
+        <th>Duration</th> 
+        <th>Event Coordinator</th>
+        <th>Number of Participants</th>
+        <th>Action</th>
+    </tr>
+   @{
+        foreach(var Event in @Model)
+        {
+           
+            <tr>
+                <th><a href="activity/@Event.id">@Event.Name</a></th>               
+                <th>@Event.EventDateTime.ToString("MMMM dd yyy @ HH:mm tt")</th> 
+                <th>@Event.DurationStr</th> 
+                <th>@Event.Creator.FirstName</th> 
+                <th>@Event.Participants.Count</th> 
+                <th>
+
+                    @if(Event.CreatorId == Event.userLoginId){
+                        <form  action="delete/@Event.id" method ="post" class="eventAction">
+                                <button class="deleteEvent  btn btn-danger btn-lg">Delete</button>
+                        </form>
+                    }else {
+                        @if(Event.isUserIdParticipating( Event.userLoginId)){                        
+                            <form  action="leave/@Event.id" method ="post" class="eventAction">
+                                    <button class="leaveEvent  btn btn-info btn-lg">Leave</button>
+                            </form>
+                        }
+                        else{
+
+                            <form  action="join/@Event.id" method ="post" class="eventAction">
+                                <button class="joinEvent  btn btn-info btn-lg">Join</button>
+                            </form>
+                        }
+                    }              
+                </th>
+            </tr>
+                        
+          
+        }
+    }
+
+</table>
+
+<form  action="new" method ="get" >
+    <button class="joinEvent  btn btn-primary btn-lg">Add New Activity!</button>
+</form>
+@if(ViewBag.JoinError != null){
+    
+    <p ><b>@ViewBag.JoinError</b></p>
+   
+}

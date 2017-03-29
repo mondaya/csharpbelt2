@@ -1,0 +1,38 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model belt2.Models.LoginViewModel
+
+<form asp-controller="Home" asp-action="Login" method="post" >
+     <div class=row>
+            <h2 class="col-xs-12 col-md-12  col-md-offset-2 ">Login</h2>
+    </div>
+    <span asp-validation-for="Email"></span>
+    <label asp-for="Email" class="col-xs-12 col-md-2"></label>
+    <input asp-for="Email" class="col-xs-12 col-md-3 login_field"/><br><br>
+    <span asp-validation-for="Password"></span>
+    <label asp-for="Password" class="col-xs-12 col-md-2"></label>
+    <input asp-for="Password" class="col-xs-12 col-md-2"/><br><br>
+    
+    <button type="submit">Login</button>
+</form>
+@if(ViewBag.InvalidUserMsg != null){
+    <p>@ViewBag.InvalidUserMsg</p>
+}
+
+
+<!--namespace YourNamespace.Controllers
+{
+    [HttpGet]
+    [Route("RouteName/{example}")]
+    public IActionResult Method(string example)
+    {
+        //Code body
+    }
+}
+Copy
+And we can link to such a route with an anchor tag like so:
+
+SomeView.cshtml
+<a asp-controller="Your" asp-action="Method" asp-route-example="PassMeThroughUrl">link with parameter</a>-->
