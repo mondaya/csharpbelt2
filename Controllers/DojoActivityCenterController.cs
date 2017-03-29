@@ -143,6 +143,7 @@ namespace belt2.Controllers
 
         [HttpPost]
         [Route("join/{EventId}")]
+        [Route("activity/join/{EventId}")]
         public IActionResult Join(int EventId)
         {
             int? userId = HttpContext.Session.GetInt32("userId");
@@ -188,6 +189,7 @@ namespace belt2.Controllers
 
         [HttpPost]
         [Route("delete/{EventId}")]
+        [Route("activity/delete/{EventId}")]
         public IActionResult delete(int EventId)
         {
             int? userId = HttpContext.Session.GetInt32("userId");
@@ -211,6 +213,7 @@ namespace belt2.Controllers
 
         [HttpPost]
         [Route("leave/{EventId}")]
+        [Route("activity/leave/{EventId}")]
         public IActionResult leave(int EventId)
         {
             int? userId = HttpContext.Session.GetInt32("userId");
